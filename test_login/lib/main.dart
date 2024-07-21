@@ -18,27 +18,35 @@ class MyApp extends StatelessWidget {
           ),
           centerTitle: true,
         ),
-        body: Padding(
-          padding: const EdgeInsets.all(16.0),
-          child: Column(
-            children: [
-              Image.network("https://i.ibb.co/CwzHq4z/trans-logo-512.png"),
-              TextField(
-                decoration: InputDecoration(labelText: 'email'),
-              ),
-              TextField(
-                obscureText: true,
-                decoration: InputDecoration(labelText: 'password'),
-              ),
-              Container(
-                width: double.infinity,
-                margin: EdgeInsets.all(16),
-                child: ElevatedButton(
-                  onPressed: () {},
-                  child: Text('로그인'),
+        body: SingleChildScrollView(
+          child: Padding(
+            padding: const EdgeInsets.all(16.0),
+            child: Column(
+              children: [
+                Padding(
+                  padding: const EdgeInsets.all(32.0),
+                  child: Image.network(
+                    "https://i.ibb.co/CwzHq4z/trans-logo-512.png",
+                    width: 81,
+                  ),
                 ),
-              )
-            ],
+                TextField(
+                  decoration: InputDecoration(labelText: 'email'),
+                ),
+                TextField(
+                  obscureText: true,
+                  decoration: InputDecoration(labelText: 'password'),
+                ),
+                Container(
+                  width: double.infinity,
+                  margin: EdgeInsets.all(16),
+                  child: ElevatedButton(
+                    onPressed: () {},
+                    child: Text('로그인'),
+                  ),
+                )
+              ],
+            ),
           ),
         ),
       ),
