@@ -34,6 +34,12 @@ class HomePage extends StatelessWidget {
             onPressed: () {},
           )
         ],
+        title: Image.asset(
+          'assets/logo.png',
+          height: 32,
+        ),
+        centerTitle: true,
+        backgroundColor: Colors.white,
       ),
       body: Center(child: Text("hello homepage")),
     );
