@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:introduction_screen/introduction_screen.dart';
 
 void main() {
   runApp(MyApp());
@@ -21,6 +22,27 @@ class Onboarding extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return const Placeholder();
+    return Scaffold(
+      body: IntroductionScreen(
+        pages: [
+          // 페이지1
+          PageViewModel(
+            title: "Title1",
+            bodyWidget: Text("body1"),
+          ),
+
+          // 페이지2
+          PageViewModel(
+            title: "Title2",
+            bodyWidget: Text("body2"),
+          ),
+        ],
+        next: Text("Next", style: TextStyle(fontWeight: FontWeight.w600)),
+        done: Text("Done", style: TextStyle(fontWeight: FontWeight.w600)),
+        onDone: () {
+          // When done button is press
+        },
+      ),
+    );
   }
 }
