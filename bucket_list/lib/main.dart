@@ -64,7 +64,35 @@ class _HomePageState extends State<HomePage> {
                     icon: Icon(CupertinoIcons.delete),
                     onPressed: () {
                       // 삭제 버튼 클릭시
-                      print('$bucket : 삭제하기');
+                      showDialog(
+                          context: context,
+                          builder: (context) {
+                            return AlertDialog(
+                              title: Text('정말로 삭제하겠습니까?'),
+                              actions: [
+                                // 취소 버튼
+                                TextButton(
+                                  onPressed: () {
+                                    Navigator.pop(context);
+                                  },
+                                  child: Text("취소"),
+                                ),
+                                // 확인 버튼
+                                TextButton(
+                                  onPressed: () {
+                                    setState(() {
+                                      bucketList.removeAt(index);
+                                    });
+                                    Navigator.pop(context);
+                                  },
+                                  child: Text(
+                                    "확인",
+                                    style: TextStyle(color: Colors.pink),
+                                  ),
+                                ),
+                              ],
+                            );
+                          });
                     },
                   ),
                   onTap: () {
