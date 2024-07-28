@@ -78,8 +78,17 @@ class _HomePageState extends State<HomePage> {
 }
 
 /// 버킷 생성 페이지
-class CreatePage extends StatelessWidget {
+// 아무 text를 입력하지 않았을 때 에러를 보여줘야 하므로 state를 사용한다.
+class CreatePage extends StatefulWidget {
   const CreatePage({Key? key}) : super(key: key);
+
+  @override
+  State<CreatePage> createState() => _CreatePageState();
+}
+
+class _CreatePageState extends State<CreatePage> {
+  // 사용자가 입력한 text를 가져올 때 사용한다.
+  TextEditingController textEditingController = TextEditingController();
 
   @override
   Widget build(BuildContext context) {
@@ -100,6 +109,7 @@ class CreatePage extends StatelessWidget {
           children: [
             // 텍스트 입력창
             TextField(
+              controller: textEditingController,
               autofocus: true,
               decoration: InputDecoration(
                 hintText: "하고 싶은 일을 입력하세요",
@@ -119,6 +129,8 @@ class CreatePage extends StatelessWidget {
                 ),
                 onPressed: () {
                   // 추가하기 버튼 클릭시
+                  String job = textEditingController.text;
+                  print(job);
                 },
               ),
             ),
