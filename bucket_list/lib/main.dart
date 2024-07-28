@@ -71,7 +71,7 @@ class _HomePageState extends State<HomePage> {
                         icon: Icon(CupertinoIcons.delete),
                         onPressed: () {
                           // 삭제 버튼 클릭시
-                          showDeleteDialog(context, index);
+                          showDeleteDialog(context, index, bucketList);
                         },
                       ),
                       onTap: () {
@@ -104,7 +104,8 @@ class _HomePageState extends State<HomePage> {
     );
   }
 
-  void showDeleteDialog(BuildContext context, int index) {
+  void showDeleteDialog(
+      BuildContext context, int index, List<Bucket> bucketList) {
     showDialog(
         context: context,
         builder: (context) {
@@ -201,8 +202,11 @@ class _CreatePageState extends State<CreatePage> {
                     setState(() {
                       error = null;
                     });
-                    // 뒤로 넘기고 싶은 것을 두번째 파라미터에 주입해준다.
-                    Navigator.pop(context, job);
+                    // navigator 대신 bucket service를 사용하여 job을 넘겨준다.
+                    BucketService bucketService = context.read<BucketService>();
+                    bucketService.createBucket(job);
+                    Navigator.pop(context);
+                    // Navigator.pop(context, job);
                   }
                 },
               ),

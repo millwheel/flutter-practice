@@ -10,5 +10,7 @@ class BucketService extends ChangeNotifier {
 
   void createBucket(String job) {
     bucketList.add(Bucket(job));
+    // 변경사항이 있는 경우 새로고침
+    notifyListeners();
   }
 }
