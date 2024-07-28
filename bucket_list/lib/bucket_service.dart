@@ -13,4 +13,9 @@ class BucketService extends ChangeNotifier {
     // 변경사항이 있는 경우 새로고침
     notifyListeners();
   }
+
+  void updateBucket(Bucket bucket, int index) {
+    bucketList[index] = bucket;
+    notifyListeners();
+  }
 }

@@ -40,6 +40,7 @@ class HomePage extends StatefulWidget {
 class _HomePageState extends State<HomePage> {
   @override
   Widget build(BuildContext context) {
+    // notifyListners()에 의해 Comsumer의 builder 함수 내부가 새로고침
     return Consumer<BucketService>(
       builder: (context, bucketService, child) {
         List<Bucket> bucketList = bucketService.bucketList;
@@ -76,9 +77,11 @@ class _HomePageState extends State<HomePage> {
                       ),
                       onTap: () {
                         // 아이템 클릭시
-                        setState(() {
-                          bucket.isDone = !bucket.isDone;
-                        });
+                        bucket.isDone = !bucket.isDone;
+                        bucketService.updateBucket(bucket, index);
+                        // setState(() {
+                        //   bucket.isDone = !bucket.isDone;
+                        // });
                       },
                     );
                   },
