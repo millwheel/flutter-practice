@@ -6,6 +6,7 @@ import 'bucket_service.dart';
 
 void main() {
   runApp(
+    // provider는 myapp을 감싼 형태로 사용한다.
     MultiProvider(
       providers: [
         ChangeNotifierProvider(create: (context) => BucketService()),
