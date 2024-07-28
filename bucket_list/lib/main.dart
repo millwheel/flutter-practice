@@ -89,6 +89,8 @@ class CreatePage extends StatefulWidget {
 class _CreatePageState extends State<CreatePage> {
   // 사용자가 입력한 text를 가져올 때 사용한다.
   TextEditingController textEditingController = TextEditingController();
+  // 에러 메시지
+  String? error;
 
   @override
   Widget build(BuildContext context) {
@@ -113,6 +115,7 @@ class _CreatePageState extends State<CreatePage> {
               autofocus: true,
               decoration: InputDecoration(
                 hintText: "하고 싶은 일을 입력하세요",
+                errorText: error,
               ),
             ),
             SizedBox(height: 32),
@@ -130,7 +133,16 @@ class _CreatePageState extends State<CreatePage> {
                 onPressed: () {
                   // 추가하기 버튼 클릭시
                   String job = textEditingController.text;
-                  print(job);
+                  if (job.isEmpty)
+                    setState(() {
+                      error = "내용을 입력하세요";
+                    });
+                  else {
+                    setState(() {
+                      error = null;
+                    });
+                    print(job);
+                  }
                 },
               ),
             ),
