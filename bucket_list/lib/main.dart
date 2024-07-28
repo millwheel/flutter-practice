@@ -2,6 +2,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
+import 'bucket.dart';
 import 'bucket_service.dart';
 
 void main() {
@@ -28,13 +29,6 @@ class MyApp extends StatelessWidget {
   }
 }
 
-class Bucket {
-  String job;
-  bool isDone = false;
-
-  Bucket(this.job);
-}
-
 /// 홈 페이지
 class HomePage extends StatefulWidget {
   const HomePage({Key? key}) : super(key: key);
@@ -44,65 +38,69 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
-  List<Bucket> bucketList = [];
-
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: Text("버킷 리스트"),
-      ),
-      body: bucketList.isEmpty
-          ? Center(child: Text("버킷리스트를 작성해주세요"))
-          : ListView.builder(
-              itemCount: bucketList.length, // bucketList 개수 만큼 보여주기
-              itemBuilder: (context, index) {
-                Bucket bucket = bucketList[index]; // index에 해당하는 bucket 가져오기
-                return ListTile(
-                  // 버킷 리스트 할 일
-                  title: Text(
-                    bucket.job,
-                    style: TextStyle(
-                      fontSize: 24,
-                      color: bucket.isDone ? Colors.grey : Colors.black,
-                      decoration: bucket.isDone
-                          ? TextDecoration.lineThrough
-                          : TextDecoration.none,
-                    ),
-                  ),
-                  // 삭제 아이콘 버튼
-                  trailing: IconButton(
-                    icon: Icon(CupertinoIcons.delete),
-                    onPressed: () {
-                      // 삭제 버튼 클릭시
-                      showDeleteDialog(context, index);
-                    },
-                  ),
-                  onTap: () {
-                    // 아이템 클릭시
-                    setState(() {
-                      bucket.isDone = !bucket.isDone;
-                    });
+    return Consumer<BucketService>(
+      builder: (context, bucketService, child) {
+        List<Bucket> bucketList = bucketService.bucketList;
+        return Scaffold(
+          appBar: AppBar(
+            title: Text("버킷 리스트"),
+          ),
+          body: bucketList.isEmpty
+              ? Center(child: Text("버킷리스트를 작성해주세요"))
+              : ListView.builder(
+                  itemCount: bucketList.length, // bucketList 개수 만큼 보여주기
+                  itemBuilder: (context, index) {
+                    Bucket bucket =
+                        bucketList[index]; // index에 해당하는 bucket 가져오기
+                    return ListTile(
+                      // 버킷 리스트 할 일
+                      title: Text(
+                        bucket.job,
+                        style: TextStyle(
+                          fontSize: 24,
+                          color: bucket.isDone ? Colors.grey : Colors.black,
+                          decoration: bucket.isDone
+                              ? TextDecoration.lineThrough
+                              : TextDecoration.none,
+                        ),
+                      ),
+                      // 삭제 아이콘 버튼
+                      trailing: IconButton(
+                        icon: Icon(CupertinoIcons.delete),
+                        onPressed: () {
+                          // 삭제 버튼 클릭시
+                          showDeleteDialog(context, index);
+                        },
+                      ),
+                      onTap: () {
+                        // 아이템 클릭시
+                        setState(() {
+                          bucket.isDone = !bucket.isDone;
+                        });
+                      },
+                    );
                   },
-                );
-              },
-            ),
-      floatingActionButton: FloatingActionButton(
-        child: Icon(Icons.add),
-        onPressed: () async {
-          // + 버튼 클릭시 버킷 생성 페이지로 이동
-          // CreatePage에서 pop에 의해 넘어온 변수가 job에 담긴다.
-          String? job = await Navigator.push(
-            context,
-            MaterialPageRoute(builder: (_) => CreatePage()),
-          );
-          if (job != null) {
-            setState(() {
-              bucketList.add(new Bucket(job));
-            });
-          }
-        },
-      ),
+                ),
+          floatingActionButton: FloatingActionButton(
+            child: Icon(Icons.add),
+            onPressed: () async {
+              // + 버튼 클릭시 버킷 생성 페이지로 이동
+              // CreatePage에서 pop에 의해 넘어온 변수가 job에 담긴다.
+              String? job = await Navigator.push(
+                context,
+                MaterialPageRoute(builder: (_) => CreatePage()),
+              );
+              if (job != null) {
+                setState(() {
+                  bucketList.add(new Bucket(job));
+                });
+              }
+            },
+          ),
+        );
+      },
     );
   }
 
