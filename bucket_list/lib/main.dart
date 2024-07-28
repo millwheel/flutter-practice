@@ -72,7 +72,7 @@ class _HomePageState extends State<HomePage> {
                         icon: Icon(CupertinoIcons.delete),
                         onPressed: () {
                           // 삭제 버튼 클릭시
-                          showDeleteDialog(context, index, bucketList);
+                          showDeleteDialog(context, index, bucketService);
                         },
                       ),
                       onTap: () {
@@ -108,7 +108,7 @@ class _HomePageState extends State<HomePage> {
   }
 
   void showDeleteDialog(
-      BuildContext context, int index, List<Bucket> bucketList) {
+      BuildContext context, int index, BucketService bucketService) {
     showDialog(
         context: context,
         builder: (context) {
@@ -125,9 +125,7 @@ class _HomePageState extends State<HomePage> {
               // 확인 버튼
               TextButton(
                 onPressed: () {
-                  setState(() {
-                    bucketList.removeAt(index);
-                  });
+                  bucketService.deleteBucket(index);
                   Navigator.pop(context);
                 },
                 child: Text(
