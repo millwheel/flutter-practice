@@ -27,6 +27,20 @@ class HomePage extends StatefulWidget {
 class _HomePageState extends State<HomePage> {
   String quiz = "";
 
+  // initState 함수에는 async를 사용할 수 없다.
+  @override
+  void initState() {
+    super.initState();
+    getQuiz();
+  }
+
+  getQuiz() async {
+    String trivia = await getNumberTrivia();
+    setState(() {
+      quiz = trivia;
+    });
+  }
+
   Future<String> getNumberTrivia() async {
     Response result = await Dio().get('http://numbersapi.com/random/trivia');
     String trivia = result.data;
@@ -69,9 +83,8 @@ class _HomePageState extends State<HomePage> {
                 style: ButtonStyle(
                   backgroundColor: MaterialStateProperty.all(Colors.white),
                 ),
-                onPressed: () async {
-                  quiz = await getNumberTrivia();
-                  setState(() {});
+                onPressed: () {
+                  getQuiz();
                 },
               ),
             ),
