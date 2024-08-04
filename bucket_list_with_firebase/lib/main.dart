@@ -218,8 +218,14 @@ class _HomePageState extends State<HomePage> {
                     future: bucketService.read(user.uid),
                     // 응답이 오기 전에 builder 부터 실행된다. 이후에 응답을 받은 후에 builder 부분이 다시 실행됨
                     builder: (context, snapshot) {
-                      print(snapshot.hasData);
                       final documents = snapshot.data?.docs ?? [];
+                      if (documents.isEmpty) {
+                        return Center(
+                            child: Text(
+                          "버킷 리스트를 작성해주세요.",
+                          style: TextStyle(fontSize: 20),
+                        ));
+                      }
                       return ListView.builder(
                         itemCount: documents.length,
                         itemBuilder: (context, index) {
@@ -241,11 +247,12 @@ class _HomePageState extends State<HomePage> {
                             trailing: IconButton(
                               icon: Icon(CupertinoIcons.delete),
                               onPressed: () {
-                                // 삭제 버튼 클릭시
+                                bucketService.delete(doc.id);
                               },
                             ),
                             onTap: () {
                               // 아이템 클릭하여 isDone 업데이트
+                              bucketService.update(doc.id, isDone);
                             },
                           );
                         },
