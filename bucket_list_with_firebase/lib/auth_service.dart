@@ -12,7 +12,41 @@ class AuthService extends ChangeNotifier {
     required Function() onSuccess, // 가입 성공시 호출되는 함수
     required Function(String err) onError, // 에러 발생시 호출되는 함수
   }) async {
-    // 회원가입
+    if (email.isEmpty) {
+      onError("이메일을 입력해 주세요.");
+      return;
+    } else if (password.isEmpty) {
+      onError("비밀번호를 입력해 주세요.");
+      return;
+    }
+
+    // firebase auth 회원 가입
+    try {
+      await FirebaseAuth.instance.createUserWithEmailAndPassword(
+        email: email,
+        password: password,
+      );
+      onSuccess();
+    } on FirebaseAuthException catch (e) {
+      // Firebase auth 에러 발생
+      if (e.code == 'weak-password') {
+        onError('비밀번호를 6자리 이상 입력해 주세요.');
+      } else if (e.code == 'email-already-in-use') {
+        onError('이미 가입된 이메일 입니다.');
+      } else if (e.code == 'invalid-email') {
+        onError('이메일 형식을 확인해주세요.');
+      } else if (e.code == 'user-not-found') {
+        onError('일치하는 이메일이 없습니다.');
+      } else if (e.code == 'wrong-password') {
+        onError('비밀번호가 일치하지 않습니다.');
+      } else {
+        onError(e.message!);
+      }
+      // !는 ?를 없애는 역할. null을 허용하지 않음
+    } catch (e) {
+      // Firebase auth 이외의 에러 발생
+      onError(e.toString());
+    }
   }
 
   void signIn({
