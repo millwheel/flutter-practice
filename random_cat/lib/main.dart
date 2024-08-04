@@ -1,12 +1,19 @@
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
-void main() {
+void main() async {
+  // main() 함수에서 async를 쓰려면 필요
+  WidgetsFlutterBinding.ensureInitialized();
+
+  // shared_preferences 인스턴스 생성
+  SharedPreferences prefs = await SharedPreferences.getInstance();
+
   runApp(
     MultiProvider(
       providers: [
-        ChangeNotifierProvider(create: (context) => CatService()),
+        ChangeNotifierProvider(create: (context) => CatService(prefs)),
       ],
       child: const MyApp(),
     ),
@@ -32,8 +39,12 @@ class CatService extends ChangeNotifier {
 
   List<String> favoriteImages = [];
 
-  CatService() {
+  SharedPreferences prefs;
+
+  CatService(this.prefs) {
     getRandomCatImages();
+
+    favoriteImages = prefs.getStringList("favorites") ?? [];
   }
 
   // 랜덤 고양이 사진 API
@@ -54,6 +65,7 @@ class CatService extends ChangeNotifier {
     } else {
       favoriteImages.add(image);
     }
+    prefs.setStringList("favorites", favoriteImages);
     notifyListeners();
   }
 }
