@@ -1,3 +1,4 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/cupertino.dart';
@@ -5,6 +6,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 import 'auth_service.dart';
+import 'bucket_service.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized(); // main 함수에서 async 사용하기 위함
@@ -13,7 +15,9 @@ void main() async {
     MultiProvider(
       providers: [
         ChangeNotifierProvider(create: (context) => AuthService()),
+        ChangeNotifierProvider(create: (context) => BucketService()),
       ],
+      // MyApp 윗 부분은 hot-reload 가 적용되지 않는다.
       child: const MyApp(),
     ),
   );
@@ -154,89 +158,104 @@ class _HomePageState extends State<HomePage> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: Text("버킷 리스트"),
-        actions: [
-          TextButton(
-            child: Text("로그아웃"),
-            onPressed: () {
-              context.read<AuthService>().signOut();
-              // 로그인 페이지로 이동
-              Navigator.pushReplacement(
-                context,
-                MaterialPageRoute(builder: (context) => LoginPage()),
-              );
-            },
+    return Consumer<BucketService>(
+      builder: (context, bucketService, child) {
+        final authService = context.read<AuthService>();
+        User user = authService.currentUser()!;
+        return Scaffold(
+          appBar: AppBar(
+            title: Text("버킷 리스트"),
+            actions: [
+              TextButton(
+                child: Text("로그아웃"),
+                onPressed: () {
+                  context.read<AuthService>().signOut();
+                  // 로그인 페이지로 이동
+                  Navigator.pushReplacement(
+                    context,
+                    MaterialPageRoute(builder: (context) => LoginPage()),
+                  );
+                },
+              ),
+            ],
           ),
-        ],
-      ),
-      body: Column(
-        children: [
-          /// 입력창
-          Padding(
-            padding: const EdgeInsets.all(8),
-            child: Row(
-              children: [
-                /// 텍스트 입력창
-                Expanded(
-                  child: TextField(
-                    controller: jobController,
-                    decoration: InputDecoration(
-                      hintText: "하고 싶은 일을 입력해주세요.",
+          body: Column(
+            children: [
+              /// 입력창
+              Padding(
+                padding: const EdgeInsets.all(8),
+                child: Row(
+                  children: [
+                    /// 텍스트 입력창
+                    Expanded(
+                      child: TextField(
+                        controller: jobController,
+                        decoration: InputDecoration(
+                          hintText: "하고 싶은 일을 입력해주세요.",
+                        ),
+                      ),
                     ),
-                  ),
-                ),
 
-                /// 추가 버튼
-                ElevatedButton(
-                  child: Icon(Icons.add),
-                  onPressed: () {
-                    // create bucket
-                    if (jobController.text.isNotEmpty) {
-                      print("create bucket");
-                    }
-                  },
-                ),
-              ],
-            ),
-          ),
-          Divider(height: 1),
-
-          /// 버킷 리스트
-          Expanded(
-            child: ListView.builder(
-              itemCount: 5,
-              itemBuilder: (context, index) {
-                String job = "$index";
-                bool isDone = false;
-                return ListTile(
-                  title: Text(
-                    job,
-                    style: TextStyle(
-                      fontSize: 24,
-                      color: isDone ? Colors.grey : Colors.black,
-                      decoration: isDone
-                          ? TextDecoration.lineThrough
-                          : TextDecoration.none,
+                    /// 추가 버튼
+                    ElevatedButton(
+                      child: Icon(Icons.add),
+                      onPressed: () {
+                        // create bucket
+                        if (jobController.text.isNotEmpty) {
+                          bucketService.create(jobController.text, user.uid);
+                        }
+                      },
                     ),
-                  ),
-                  // 삭제 아이콘 버튼
-                  trailing: IconButton(
-                    icon: Icon(CupertinoIcons.delete),
-                    onPressed: () {
-                      // 삭제 버튼 클릭시
-                    },
-                  ),
-                  onTap: () {
-                    // 아이템 클릭하여 isDone 업데이트
-                  },
-                );
-              },
-            ),
+                  ],
+                ),
+              ),
+              Divider(height: 1),
+
+              /// 버킷 리스트
+              Expanded(
+                child: FutureBuilder<QuerySnapshot>(
+                    // read가 Future를 반환하므로 FutureBuilder로 처리해야한다.
+                    future: bucketService.read(user.uid),
+                    // 응답이 오기 전에 builder 부터 실행된다. 이후에 응답을 받은 후에 builder 부분이 다시 실행됨
+                    builder: (context, snapshot) {
+                      print(snapshot.hasData);
+                      final documents = snapshot.data?.docs ?? [];
+                      return ListView.builder(
+                        itemCount: documents.length,
+                        itemBuilder: (context, index) {
+                          final doc = documents[index];
+                          String job = doc.get("job");
+                          bool isDone = doc.get("isDone");
+                          return ListTile(
+                            title: Text(
+                              job,
+                              style: TextStyle(
+                                fontSize: 24,
+                                color: isDone ? Colors.grey : Colors.black,
+                                decoration: isDone
+                                    ? TextDecoration.lineThrough
+                                    : TextDecoration.none,
+                              ),
+                            ),
+                            // 삭제 아이콘 버튼
+                            trailing: IconButton(
+                              icon: Icon(CupertinoIcons.delete),
+                              onPressed: () {
+                                // 삭제 버튼 클릭시
+                              },
+                            ),
+                            onTap: () {
+                              // 아이템 클릭하여 isDone 업데이트
+                            },
+                          );
+                        },
+                      );
+                    }),
+              ),
+            ],
           ),
-        ],
-      ),
+        );
+      },
     );
   }
 }
