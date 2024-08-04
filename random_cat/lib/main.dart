@@ -39,7 +39,7 @@ class CatService extends ChangeNotifier {
   // 랜덤 고양이 사진 API
   void getRandomCatImages() async {
     var result = await Dio().get(
-      "https://api.thecatapi.com/v1/images/search?limit=1&mime_types=jpg",
+      "https://api.thecatapi.com/v1/images/search?limit=10&mime_types=jpg",
     );
     for (var i = 0; i < result.data.length; i++) {
       var map = result.data[i];
@@ -54,6 +54,7 @@ class CatService extends ChangeNotifier {
     } else {
       favoriteImages.add(image);
     }
+    notifyListeners();
   }
 }
 
@@ -94,11 +95,27 @@ class HomePage extends StatelessWidget {
                 String catImageUrl = catService.catImages[index];
                 return GestureDetector(
                   onTap: () {
-                    print("click $index");
+                    catService.toggleFavoriteImage(catImageUrl);
                   },
-                  child: Image.network(
-                    catImageUrl,
-                    fit: BoxFit.cover,
+                  child: Stack(
+                    children: [
+                      Positioned.fill(
+                        child: Image.network(
+                          catImageUrl,
+                          fit: BoxFit.cover,
+                        ),
+                      ),
+                      Positioned(
+                        right: 8,
+                        bottom: 8,
+                        child: Icon(
+                          Icons.favorite,
+                          color: catService.favoriteImages.contains(catImageUrl)
+                              ? Colors.amber
+                              : Colors.transparent,
+                        ),
+                      )
+                    ],
                   ),
                 );
               },
@@ -122,6 +139,43 @@ class FavoritePage extends StatelessWidget {
           appBar: AppBar(
             title: Text("좋아요"),
             backgroundColor: Colors.amber,
+          ),
+          body: GridView.count(
+            mainAxisSpacing: 8,
+            crossAxisSpacing: 8,
+            padding: EdgeInsets.all(8),
+            crossAxisCount: 2,
+            children: List.generate(
+              catService.favoriteImages.length,
+              (index) {
+                String catImageUrl = catService.favoriteImages[index];
+                return GestureDetector(
+                  onTap: () {
+                    catService.toggleFavoriteImage(catImageUrl);
+                  },
+                  child: Stack(
+                    children: [
+                      Positioned.fill(
+                        child: Image.network(
+                          catImageUrl,
+                          fit: BoxFit.cover,
+                        ),
+                      ),
+                      Positioned(
+                        right: 8,
+                        bottom: 8,
+                        child: Icon(
+                          Icons.favorite,
+                          color: catService.favoriteImages.contains(catImageUrl)
+                              ? Colors.amber
+                              : Colors.transparent,
+                        ),
+                      )
+                    ],
+                  ),
+                );
+              },
+            ),
           ),
         );
       },
