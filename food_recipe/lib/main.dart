@@ -129,6 +129,79 @@ class HomePage extends StatelessWidget {
           ),
         ],
       ),
+      drawer: Drawer(
+        child: Column(
+          children: [
+            // profile
+            DrawerHeader(
+              decoration: BoxDecoration(
+                color: Colors.amber,
+              ),
+              child: SizedBox(
+                width: double.infinity,
+                height: 150,
+                child: Column(
+                  children: [
+                    CircleAvatar(
+                      radius: 40,
+                      backgroundColor: Colors.white,
+                      child: Padding(
+                        padding: const EdgeInsets.all(8),
+                        child: Image.network(
+                          "https://i.ibb.co/CwzHq4z/trans-logo-512.png",
+                          width: 62,
+                        ),
+                      ),
+                    ),
+                    SizedBox(height: 13),
+                    Text(
+                      "닉네임",
+                      style: TextStyle(
+                        color: Colors.brown,
+                        fontSize: 18,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                    Text(
+                      "hello@world.com",
+                      style: TextStyle(
+                        fontSize: 16,
+                        color: Colors.black,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ),
+            ListTile(
+              title: Text(
+                '구매내역',
+                style: TextStyle(fontSize: 18),
+              ),
+              trailing: Icon(
+                Icons.arrow_forward_ios,
+                color: Colors.black,
+              ),
+              onTap: () {
+                Navigator.pop(context);
+              },
+            ),
+            ListTile(
+              title: Text(
+                '저장한 레시피',
+                style: TextStyle(fontSize: 18),
+              ),
+              trailing: Icon(
+                Icons.arrow_forward_ios,
+                color: Colors.black,
+              ),
+              onTap: () {
+                Navigator.pop(context);
+              },
+            )
+          ],
+        ),
+      ),
     );
   }
 }
