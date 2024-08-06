@@ -30,11 +30,6 @@ class HomePage extends StatelessWidget {
             "https://i.ibb.co/HBGKYn4/foodiesfeed-com-summer-juicy-beef-burger.jpg",
       },
       {
-        "category": "건강식",
-        "imgUrl":
-            "https://i.ibb.co/mB5YNs2/foodiesfeed-com-pumpkin-soup-with-pumpkin-seeds-on-top.jpg",
-      },
-      {
         "category": "한식",
         "imgUrl":
             "https://i.ibb.co/Kzzpc97/Beautiful-vibrant-shot-of-traiditonal-Korean-meals.jpg",
@@ -91,6 +86,45 @@ class HomePage extends StatelessWidget {
                   onPressed: printClickIcon(),
                 ),
               ),
+            ),
+          ),
+          Divider(
+            height: 1,
+          ),
+          Expanded(
+            child: ListView.builder(
+              itemCount: dataList.length,
+              itemBuilder: (BuildContext context, int index) {
+                Map<String, dynamic> data = dataList[index];
+                String category = data["category"];
+                String imageUrl = data["imgUrl"];
+                return Card(
+                  margin: const EdgeInsets.all(8),
+                  child: Stack(
+                    alignment: Alignment.center,
+                    children: [
+                      Image.network(
+                        imageUrl,
+                        width: double.infinity,
+                        fit: BoxFit.cover,
+                        height: 120,
+                      ),
+                      Container(
+                        width: double.infinity,
+                        height: 120,
+                        color: Colors.black.withOpacity(0.5),
+                      ),
+                      Text(
+                        category,
+                        style: TextStyle(
+                          color: Colors.white,
+                          fontSize: 36,
+                        ),
+                      )
+                    ],
+                  ),
+                );
+              },
             ),
           ),
         ],
