@@ -221,8 +221,124 @@ class MisoThirdPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: Center(
-        child: Text("Miso 세 번째 페이지"),
+      backgroundColor: misoPrimaryColor,
+      body: SafeArea(
+        // 사실상 최상위에서 항상 사용하는 요소
+        child: SizedBox(
+          width: double.infinity,
+          child: Stack(
+            alignment: Alignment.center,
+            children: [
+              Positioned(
+                child: Container(
+                  constraints: BoxConstraints(maxWidth: 400),
+                  child: Image.network(backgroundImgUrl),
+                ),
+              ),
+              Column(
+                children: [
+                  SizedBox(
+                    height: 40,
+                  ),
+                  RichText(
+                    textAlign: TextAlign.center,
+                    text: TextSpan(
+                      style: TextStyle(
+                        fontSize: 28,
+                        height: 1.5,
+                        color: Colors.white,
+                      ),
+                      children: [
+                        TextSpan(
+                          text: "친구 추천할 때마다\n",
+                        ),
+                        TextSpan(
+                            text: "10,000원",
+                            style: TextStyle(
+                              fontWeight: FontWeight.w700,
+                            )),
+                        TextSpan(
+                          text: " 할인 쿠폰 지급!",
+                        )
+                      ],
+                    ),
+                  ),
+                  SizedBox(
+                    height: 64,
+                  ),
+                  GestureDetector(
+                    onTap: () {
+                      print("자세히 보기 클릭");
+                    },
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Text(
+                          "자세히 보기",
+                          style: TextStyle(
+                            color: Colors.white,
+                            fontSize: 18,
+                          ),
+                        ),
+                        Icon(
+                          Icons.chevron_right,
+                          color: Colors.white,
+                        )
+                      ],
+                    ),
+                  ),
+                ],
+              ),
+              Positioned(
+                bottom: 42,
+                // 커스텀 버튼 만드는 방법, 특정 박스 디자인 만드는 방법: Container
+                child: GestureDetector(
+                  onTap: () {
+                    print("친구 추천하기 클릭됨");
+                  },
+                  child: Container(
+                    // 패딩 추가
+                    padding: EdgeInsets.symmetric(
+                      horizontal: 24,
+                      vertical: 16,
+                    ),
+                    // 배경색과 모서리 그리고 그림자 결정 - container의 decoration 사용
+                    decoration: BoxDecoration(
+                        color: Colors.white,
+                        borderRadius: BorderRadius.circular(64),
+                        boxShadow: [
+                          BoxShadow(
+                            color: Colors.black.withOpacity(0.4),
+                            offset: Offset(0, 5),
+                            spreadRadius: 2,
+                            blurRadius: 12,
+                          )
+                        ]),
+                    child: Row(
+                      children: [
+                        Icon(
+                          Icons.redeem,
+                          color: misoPrimaryColor,
+                        ),
+                        SizedBox(
+                          width: 8,
+                        ),
+                        Text(
+                          "친구 추천하기",
+                          style: TextStyle(
+                            color: misoPrimaryColor,
+                            fontSize: 18,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        )
+                      ],
+                    ),
+                  ),
+                ),
+              )
+            ],
+          ),
+        ),
       ),
     );
   }
