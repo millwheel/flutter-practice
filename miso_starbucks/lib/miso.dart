@@ -59,54 +59,67 @@ class MisoFirstPage extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: misoPrimaryColor,
-      body: Stack(
-        alignment: Alignment.center,
-        children: [
-          Column(
-            mainAxisAlignment: MainAxisAlignment.center,
+      body: SafeArea(
+        child: SizedBox(
+          width: double.infinity, // 중앙정렬 역할
+          child: Stack(
+            alignment: Alignment.center,
             children: [
-              Text(
-                "대한민국 1등 홈서비스\n미소를 만나보세요!",
-                style: TextStyle(
-                  color: Colors.white,
-                  fontSize: 32,
-                  fontWeight: FontWeight.w600,
-                ),
+              Column(
+                children: [
+                  // 위쪽 패딩을 전체 사이즈의 배율로 설정
+                  SizedBox(
+                    height: MediaQuery.of(context).size.height * 0.2,
+                  ),
+                  Text(
+                    textAlign: TextAlign.center,
+                    "대한민국 1등 홈서비스\n미소를 만나보세요!",
+                    style: TextStyle(
+                      color: Colors.white,
+                      fontSize: 32,
+                      fontWeight: FontWeight.w600,
+                    ),
+                  ),
+                  SizedBox(
+                    height: 38,
+                  ),
+                  ElevatedButton(
+                    onPressed: () {
+                      print("예약하기 버튼 클릭됨");
+                      Navigator.pushReplacement(
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) => MisoSecondPage()));
+                    },
+                    child: Text(
+                      "+ 예약하기",
+                      style: TextStyle(color: misoPrimaryColor),
+                    ),
+                  ),
+                ],
               ),
-              SizedBox(
-                height: 38,
-              ),
-              Center(
-                child: ElevatedButton(
-                  onPressed: () {},
-                  child: Text(
-                    "+ 예약하기",
-                    style: TextStyle(color: misoPrimaryColor),
+              // positioned 을 사용하면 특정 위치에 고정할 수 있음. 단, 상위에 Stack으로 감싸야함
+              Positioned(
+                bottom: 32,
+                child: GestureDetector(
+                  onTap: () {
+                    print("서비스 상세 정보 클릭 됨");
+                  },
+                  child: Container(
+                    color: Colors.white.withOpacity(0.3),
+                    padding: EdgeInsets.all(12),
+                    child: Text(
+                      "서비스 상세 정보",
+                      style: TextStyle(
+                        color: Colors.white,
+                      ),
+                    ),
                   ),
                 ),
-              ),
+              )
             ],
           ),
-          // positioned 을 사용하면 특정 위치에 고정할 수 있음. 단, 상위에 Stack으로 감싸야함
-          Positioned(
-            bottom: 32,
-            child: GestureDetector(
-              onTap: () {
-                print("서비스 상세 정보 클릭 됨");
-              },
-              child: Container(
-                color: Colors.white.withOpacity(0.3),
-                padding: EdgeInsets.all(12),
-                child: Text(
-                  "서비스 상세 정보",
-                  style: TextStyle(
-                    color: Colors.white,
-                  ),
-                ),
-              ),
-            ),
-          )
-        ],
+        ),
       ),
     );
   }
@@ -119,8 +132,79 @@ class MisoSecondPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: Center(
-        child: Text("Miso 두 번째 페이지"),
+      body: SafeArea(
+        child: SizedBox(
+          width: double.infinity,
+          child: Stack(
+            children: [
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 24),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    // 위쪽 패딩을 전체 사이즈의 배율로 설정
+                    SizedBox(
+                      height: MediaQuery.of(context).size.height * 0.15,
+                    ),
+                    Text(
+                      "예약내역",
+                      style: TextStyle(
+                        fontWeight: FontWeight.w900,
+                        fontSize: 32,
+                      ),
+                    ),
+                    SizedBox(
+                      height: 64,
+                    ),
+                    Row(
+                      children: [
+                        Icon(
+                          Icons.error,
+                          color: misoPrimaryColor,
+                        ),
+                        SizedBox(width: 8),
+                        // 가로 남은 공간 채우기
+                        Expanded(
+                          child: FittedBox(
+                            fit: BoxFit.scaleDown,
+                            child: Text("예약된 서비스가 아직 없어요. 지금 예약해보세요!"),
+                          ),
+                        ),
+                      ],
+                    ),
+                    Divider(
+                      color: Colors.grey,
+                    )
+                  ],
+                ),
+              ),
+              Positioned(
+                left: 24, // 포지션 좌측 패딩 크기
+                right: 24, // 포지션 우측 패딩 크기
+                bottom: 30, // 포지션 아래 패딩 크기
+                child: GestureDetector(
+                  onTap: () {
+                    print("예약하기 클릭됨");
+                  },
+                  child: Container(
+                    width: double.infinity, // 컨테이너 확장
+                    height: 58, //
+                    color: misoPrimaryColor,
+                    alignment: Alignment.center,
+                    padding: EdgeInsets.all(12),
+                    child: Text(
+                      "예약하기",
+                      style: TextStyle(
+                        color: Colors.white,
+                        fontSize: 18,
+                      ),
+                    ),
+                  ),
+                ),
+              )
+            ],
+          ),
+        ),
       ),
     );
   }
