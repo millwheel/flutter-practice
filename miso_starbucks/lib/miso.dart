@@ -41,10 +41,10 @@ class _MisoState extends State<Miso> {
         type: BottomNavigationBarType.fixed, // 선택시 아이콘 움직이지 않기
         backgroundColor: Colors.white,
         items: [
-          BottomNavigationBarItem(icon: Icon(Icons.home), label: ""),
-          BottomNavigationBarItem(icon: Icon(Icons.list), label: ""),
-          BottomNavigationBarItem(icon: Icon(Icons.redeem), label: ""),
-          BottomNavigationBarItem(icon: Icon(Icons.person), label: ""),
+          BottomNavigationBarItem(icon: Icon(Icons.home), label: "home"),
+          BottomNavigationBarItem(icon: Icon(Icons.list), label: "list"),
+          BottomNavigationBarItem(icon: Icon(Icons.redeem), label: "redeem"),
+          BottomNavigationBarItem(icon: Icon(Icons.person), label: "user"),
         ],
       ),
     );
@@ -58,8 +58,55 @@ class MisoFirstPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: Center(
-        child: Text("Miso 첫 번째 페이지"),
+      backgroundColor: misoPrimaryColor,
+      body: Stack(
+        alignment: Alignment.center,
+        children: [
+          Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Text(
+                "대한민국 1등 홈서비스\n미소를 만나보세요!",
+                style: TextStyle(
+                  color: Colors.white,
+                  fontSize: 32,
+                  fontWeight: FontWeight.w600,
+                ),
+              ),
+              SizedBox(
+                height: 38,
+              ),
+              Center(
+                child: ElevatedButton(
+                  onPressed: () {},
+                  child: Text(
+                    "+ 예약하기",
+                    style: TextStyle(color: misoPrimaryColor),
+                  ),
+                ),
+              ),
+            ],
+          ),
+          // positioned 을 사용하면 특정 위치에 고정할 수 있음. 단, 상위에 Stack으로 감싸야함
+          Positioned(
+            bottom: 32,
+            child: GestureDetector(
+              onTap: () {
+                print("서비스 상세 정보 클릭 됨");
+              },
+              child: Container(
+                color: Colors.white.withOpacity(0.3),
+                padding: EdgeInsets.all(12),
+                child: Text(
+                  "서비스 상세 정보",
+                  style: TextStyle(
+                    color: Colors.white,
+                  ),
+                ),
+              ),
+            ),
+          )
+        ],
       ),
     );
   }
