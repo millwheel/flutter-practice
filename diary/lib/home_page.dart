@@ -38,22 +38,44 @@ class _HomePageState extends State<HomePage> {
                     });
                   },
                 ),
-                // Padding(
-                //   padding: EdgeInsets.symmetric(vertical: 10, horizontal: 20),
-                //   child: ListView.separated(
-                //     itemCount: diaryList.length,
-                //     itemBuilder: (BuildContext context, int index) {
-                //       int i = diaryList.length - index - 1;
-                //       Diary diary = diaryList[i];
-                //       Text(diary.text);
-                //     },
-                //     separatorBuilder: (BuildContext context, int index) {
-                //       return Divider(
-                //         height: 1,
-                //       );
-                //     },
-                //   ),
-                // ),
+                Divider(
+                  height: 1,
+                ),
+                Expanded(
+                  child: diaryList.isEmpty
+                      ? Center(
+                          child: Text(
+                            "한 줄 일기를 작성해주세요.",
+                            style: TextStyle(
+                              color: Colors.grey,
+                              fontSize: 18,
+                            ),
+                          ),
+                        )
+                      : ListView.separated(
+                          itemCount: diaryList.length,
+                          itemBuilder: (context, index) {
+                            int i = diaryList.length - index - 1;
+                            Diary diary = diaryList[index];
+                            // ListView 아래는 ListTile
+                            return ListTile(
+                              title: Text(
+                                diary.text,
+                                style: TextStyle(
+                                  fontSize: 20,
+                                  color: Colors.black,
+                                ),
+                              ),
+                              onTap: () {
+                                showDeleteDialog(diaryService, diary);
+                              },
+                            );
+                          },
+                          separatorBuilder: (BuildContext context, int index) {
+                            return Divider(height: 1);
+                          },
+                        ),
+                ),
               ],
             ),
           ),
@@ -68,41 +90,79 @@ class _HomePageState extends State<HomePage> {
     );
   }
 
-  void createDiary(DiaryService diaryService) {
-    String newText = createTextController.text.trim();
-    if (newText.isNotEmpty) {
-      diaryService.create(newText, selectedDay);
-      createTextController.text = "";
-    }
+  // build가 아닌 private 함수 넣을 수 있음
+  void showCreateDialog(DiaryService diaryService) {
+    // 팝업 창 띄우는 역할
+    showDialog(
+      context: context,
+      builder: (context) {
+        // 팝업 창
+        return AlertDialog(
+          title: Text("일기 작성"),
+          // 입력 받기
+          content: TextField(
+            controller: createTextController,
+            cursorColor: Colors.indigo,
+            decoration: InputDecoration(
+              hintText: "한 줄 일기를 작성해주세요.",
+              focusedBorder: UnderlineInputBorder(
+                borderSide: BorderSide(color: Colors.indigo),
+              ),
+            ),
+          ),
+          // 액션 결정해주는 곳
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.pop(context),
+              child: Text(
+                "취소",
+                style: TextStyle(color: Colors.indigo),
+              ),
+            ),
+            TextButton(
+              onPressed: () {
+                String newText = createTextController.text.trim();
+                if (newText.isNotEmpty) {
+                  diaryService.create(newText, selectedDay);
+                  createTextController.text = "";
+                }
+                Navigator.pop(context);
+              },
+              child: Text(
+                "작성",
+                style: TextStyle(color: Colors.indigo),
+              ),
+            ),
+          ],
+        );
+      },
+    );
   }
 
-  void showCreateDialog(DiaryService diaryService) {
+  void showDeleteDialog(DiaryService diaryService, Diary diary) {
     showDialog(
       context: context,
       builder: (context) {
         return AlertDialog(
-          title: Text("일기 작성"),
-          content: TextField(
-            controller: createTextController,
-            decoration: InputDecoration(
-              hintText: "한 줄 일기를 작성해주세요.",
-            ),
-            onSubmitted: (_) {
-              createDiary(diaryService);
-              Navigator.pop(context);
-            },
-          ),
+          title: Text("일기 삭제"),
+          content: Text("일기를 삭제하시겠습니까?"),
           actions: [
             TextButton(
               onPressed: () => Navigator.pop(context),
-              child: Text("취소"),
+              child: Text(
+                "취소",
+                style: TextStyle(color: Colors.indigo),
+              ),
             ),
             TextButton(
               onPressed: () {
-                createDiary(diaryService);
+                diaryService.delete(diary.createdAt);
                 Navigator.pop(context);
               },
-              child: Text("작성"),
+              child: Text(
+                "삭제",
+                style: TextStyle(color: Colors.red),
+              ),
             ),
           ],
         );
